@@ -8,11 +8,9 @@ class InterfaceApp:
         self.root = root
         self.root.title("Chat with ...")
 
-        # Frame utama
         self.main_frame = tk.Frame(root)
         self.main_frame.pack(fill=tk.BOTH, expand=True)
 
-        # Inisialisasi Terminal dan Chatbot App
         self.chatbot_frame = ChatbotFrame(self.main_frame)
         self.terminal_frame = TerminalFrame(self.main_frame, self.chatbot_frame)
 
