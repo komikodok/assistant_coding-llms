@@ -90,16 +90,12 @@ class ChatbotFrame:
             llm_response = self.llm_app.invoke(
                     question=user_input, 
                     chat_history=self.chat_history, 
-                    from_terminal=False
+                    is_error_message=False
             )
-            # Response items dari llm adalah {"question": .., "generation": .., "chat_history": [..], "from_terminal": ..}
+            # Response items dari llm adalah {"question": .., "generation": .., "chat_history": [..], "is_error_message": bool}
             response_items = llm_response.get_response_items()
             # Menampilkan respon bot ke dalam chatbot
             self.add_message(f"Bot: {response_items['generation']}")
-            # Tambahkan user_input dan bot_response ke chat_history
-            self.chat_history.append(HumanMessage(content=response_items['question']))
-            self.chat_history.append(AIMessage(content=response_items['generation']))
-
             self.loading_frame.grid_forget()
 
             # Mengembalikan tombol dan entry ke dalam keadaan semula setelah proses threading_llm
