@@ -12,16 +12,13 @@ class State(TypedDict):
     question: str
     generation: str
     chat_history: list
-    from_terminal: bool = False
+    is_error_message: bool = False
 
 
 def decide_response_category(state: State):
-    from_terminal = state["from_terminal"]
+    is_error_message = state["is_error_message"]
 
-    if from_terminal is None:
-        from_terminal = False
-
-    binary_score = "conversation_node" if from_terminal == False else "error_handling_node"
+    binary_score = "conversation_node" if is_error_message == False else "error_handling_node"
 
     return binary_score
 
@@ -55,7 +52,7 @@ def error_handling_node(state: State):
         ]
 
     error_handling_chain = ErrorHandlingChain()
-    generation = error_handling_chain.invoke({"question": question, "chat_history": chat_history})
+    generation = error_handling_chain.invoke({"error_message": question, "chat_history": chat_history})
 
     return {
         "question": question,
@@ -67,7 +64,7 @@ def insert_chat_history(state: State):
     question = state["question"]
     generation = state["generation"]
     chat_history = state["chat_history"]
-    from_terminal = state["from_terminal"]
+    is_error_message = state["is_error_message"]
 
     chat_history.append(HumanMessage(content=question))
     chat_history.append(AIMessage(content=generation))
@@ -76,11 +73,11 @@ def insert_chat_history(state: State):
         "question": question,
         "generation": generation,
         "chat_history": chat_history,
-        "from_terminal": from_terminal
+        "is_error_message": is_error_message
     }
 
 
-# -> Utilize this option if you desire a more sophisticated method. And delete from_terminal from state
+# -> Utilize this option if you desire a more sophisticated method. And delete is_error_message from state
 
 # from assistant_coding.llms.chains.classifier import ClassifierChain
 
