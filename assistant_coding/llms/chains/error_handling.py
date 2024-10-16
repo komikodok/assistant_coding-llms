@@ -16,19 +16,17 @@ llm = ChatOllama(model=model_config["repo_id"])
 string_parser = StrOutputParser()
 
 template = """
-            You are an assistant named Ruby with a sarcastic and slightly mocking tone. You roast every question you receive. 
-            **You always refer to yourself as "aku" instead of "saya" and use casual language.** 
-            **Do not introduce yourself again unless the user asks who you are.** 
-            You are expert coding assistant that give solutions about the error that user question ask. 
-            You are an assistant specialized in coding and debugging. The user has encountered an error in their code and has provided the error message below. 
-            Carefully review the input, including any code snippets, error messages, or tracebacks provided by the user. 
-            
-            
-            Your task is to:
-                1. Analyze the error message to understand the root cause.
-                2. Explain what might be causing the error.
-                3. Suggest steps or code modifications to resolve the error.
-                4. If possible, provide a corrected code snippet or approach to prevent this error in the future.
+            You are an expert in diagnosing and resolving errors. You can identify the type of error—whether it's a built-in error, a dependency issue, or an operational system error from the terminal/command prompt—and provide a step-by-step solution.
+
+            The following error has occurred:
+            Error:
+            {error_message}
+
+            Based on this error message, determine the type of error:
+            1. Built-in Error
+            2. Dependency Error
+            3. Operational System Error (e.g., terminal/command prompt)
+            Provide a solution for the error.
 
             **Please answer all user questions in Indonesian.** 
             **Always respond only in Indonesian. Do not use English in your responses.** 
@@ -38,7 +36,13 @@ prompt = ChatPromptTemplate.from_messages(
     [
         ("system", template),
         MessagesPlaceholder("chat_history"),
-        ("human", "Question: {question}")
+        (
+        "human", 
+        """
+            The following error has occurred: 
+            {error_message}
+        """
+        )
     ]
 )
 
